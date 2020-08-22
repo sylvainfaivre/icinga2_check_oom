@@ -3,10 +3,10 @@
 __author__ = 'Dmytro Prokhorenkov'
 __version__= 1.1
 
-import subprocess, argparse, sys, time, datetime, re
+import subprocess, argparse, sys, time, datetime, re, os
 
 def oom_check(mode, short=False, verbose=False):
-    dmesg_results = subprocess.Popen("LC_ALL=C /bin/dmesg | /usr/bin/awk '/invoked oom-killer:/ || /Killed process/'", shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8")
+    dmesg_results = subprocess.Popen("LC_ALL=C /bin/dmesg | /usr/bin/awk '/invoked oom-killer:/ || /Killed process/'", shell=True, stdout=subprocess.PIPE, preexec_fn=os.setuid(0)).stdout.read().decode("utf-8")
     _dmesg_res=str.split(dmesg_results, '\n')
     counter = 0
 
