@@ -6,10 +6,10 @@ The original version of this check assumes that non-root users can run `/bin/dme
 
 ### Installing
 * Place `check_oom.py` and `check_oom_wrapper` in `/usr/lib/nagios/plugins`.
- * If you have a different file path for your plugins, you will need to recompile `check_oom_wrapper.c` after modifying the `REAL_PATH` definition on line 3.  Use `gcc -o check_oom_wrapper check_oom_wrapper`.
+ * If you have a different file path for your plugins, you will need to recompile `check_oom_wrapper.c` after modifying the `REAL_PATH` definition on line 3.  Use `gcc -o check_oom_wrapper check_oom_wrapper.c`
 * Set the setuid flag on the wrapper file: 
 ```shell
-sudo chmod u+s /usr/lib/nagios/plugins/check_oom_wrapper.
+sudo chmod u+s /usr/lib/nagios/plugins/check_oom_wrapper
 ```
 
 As a future improvement, it would be nice to detect whether the script is running as root, and only call `setuid()` on the Python subprocess if necessary.
