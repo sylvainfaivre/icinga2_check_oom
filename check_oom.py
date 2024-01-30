@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-__author__ = 'Dmytro Prokhorenkov'
-__version__= 1.1
+__author__ = 'Dmytro Prokhorenkov and others'
+__version__= 2.0
 
 import subprocess, argparse, sys, time, datetime, re, os
 
@@ -25,22 +25,32 @@ def oom_check(mode, short=False, verbose=False):
         counter = len(_dmesg_res)
 
     exitcode=0
+
     if counter > 2:
-        message = "CRITICAL: There are couple of OOM events. You can clear output with dmesg -c"
-        if verbose:
-            message = message + dmesg_results
-        exitcode = 2
         if mode == 'warning':
+            severity = "WARNING"
             exitcode = 1
-    elif counter == 2:
-        message = "WARNING: 1 process was killed by OOM. You can clear output with dmesg -c"
-        if verbose:
-            message = message + "\r\r" + dmesg_results
-        exitcode = 1
-        if mode == 'critical':
+        else:
+            severity = "CRITICAL"
             exitcode = 2
+        message = severity + ": There are couple of OOM events. You can clear output with dmesg -c"
+        if verbose:
+            message = message + '\n' + dmesg_results
+
+    elif counter == 2:
+        if mode == 'critical':
+            severity = "CRITICAL"
+            exitcode = 2
+        else:
+            severity = "WARNING"
+            exitcode = 1
+        message = severity + ": 1 process was killed by OOM. You can clear output with dmesg -c"
+        if verbose:
+            message = message + '\n' + dmesg_results
+
     else:
         message = "OK: No OOM killer activity found in dmesg output"
+
     return exitcode, message
 
 def parse_args():
